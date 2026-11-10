@@ -1,64 +1,61 @@
----
-name: renew-wise
-description: Find upcoming household bill, subscription, insurance, and warranty dates in documents the user authorizes on this UGREEN NAS. Return an evidence-linked review list and flag uncertainty without changing files.
----
-
 # RenewWise
 
-## Goal
+# Goal
 
-Help a household or small-office user find upcoming renewal, payment, and warranty dates in authorized NAS documents. Return a concise list with the source document and supporting text so the user can verify every result.
+Help a household or small-office user find upcoming bill, subscription, insurance, and warranty dates in documents inside one NAS folder they explicitly authorize. Return a concise, source-linked review list and identify uncertainty so the user can verify each result.
 
-## When to use
+# Required input
 
-Use when the user asks what bills, subscriptions, policies, or warranties are due or expiring, or asks to review these dates in a named NAS folder. This Skill only prepares a review list. It does not create reminders, contact providers, move files, or alter documents.
+- The exact NAS folder to search, provided or explicitly confirmed by the user. Never guess a folder or broaden scope to another share.
+- A date window, such as the next 30 days. If it is missing, ask for it before searching.
+- Optional categories: bills, subscriptions, insurance, or warranties. If omitted, use all four.
 
-## Required inputs
+# Generation-time capability evidence
 
-- An authorized NAS folder to search. If the user has not identified one, ask which folder to use; never guess a private location.
-- A time window, such as the next 30 days. If omitted, ask for a window or offer a clearly labeled next-30-days view.
-- Optional categories: bills, subscriptions, insurance, or warranties. If omitted, search all four.
+- `ug-filesystem` → `file-agent`
+- `ug-document` → `document-agent`
 
-## Supported capability areas
+The public capability catalog maps `ug-filesystem` to `file-agent` and documents its read-only `find` Action, which accepts a required `path` plus optional `pattern`, `type`, `max-depth`, and `limit`. It maps `ug-document` to `document-agent` and documents its read-only `extract` Action, which accepts a required `query`, repeated `file` values, and optional `schema`, `content-scope`, `max-files`, `body-cap`, and `dedupe`. Use only those catalogued capabilities. Base user-facing results on completed delegate results, not assumptions about these Actions.
 
-Use only UGREEN NAS capabilities available through the installed Skill Developer Package:
+# Orchestration
 
-- **Files:** find and browse documents within the user-authorized folder.
-- **Documents:** read documents and extract information from them.
+This Skill is read-only. It finds likely source files and extracts renewal facts; it never writes, moves, renames, deletes, tags, or shares files, creates reminders, contacts providers, or performs payment actions. Do not use shell commands, direct filesystem access, unsupported APIs, or external services. Do not transmit document contents or personal information outside the NAS. If the available document-processing capability would require external transmission, stop and explain that the request cannot be completed under this Skill's data-handling boundary.
 
-Do not use shell commands, scripts, direct filesystem access, unsupported APIs, or external services. If the installed package does not expose the required Files and Documents capabilities, explain that the search cannot be completed and stop. Do not invent command names or silently substitute another source.
+1. Confirm the exact authorized folder, date window, and category scope. Ask for missing required input before delegating. Keep the search within that folder and its descendants; respect platform permissions and do not include hidden or inaccessible content unless the user explicitly requested it and the capability permits it.
+2. Delegate the candidate-file search to the registered expert using only this CLI's mapped agent:
 
-## Workflow and expert review passes
+   `delegate --target file-agent --instruction 'Use ug-filesystem find to locate candidate bills, invoices, subscription notices, insurance policies, and warranty receipts within the exact NAS folder authorized by the user. Search only that folder and its descendants. Return actual matching file paths, filenames, and the operation status. Do not read unrelated files or modify, move, rename, delete, or share anything.'`
 
-Run these passes in order as one coordinated Skill workflow. Each pass must use the actual folder, file list, or document content returned by the preceding pass; do not refer vaguely to “the earlier results.”
+3. Continue only if the file-agent returns status `completed` and actual candidate file paths. If the result set is empty, report the empty result and stop; never substitute similar documents or widen the folder scope. If it returns partial results, preserve the partial status and do not imply the search was complete. Do not invent or reconstruct file paths.
+4. Delegate extraction using only paths actually returned by the completed file-agent result:
 
-1. **Scope pass:** confirm the folder, time window, and categories. Search only that authorized folder and its descendants. Respect NAS access permissions and skip hidden or inaccessible content unless the user explicitly included it and the tools permit access.
-2. **Document-finder pass:** use the Files capability to find candidate bills, invoices, subscription notices, insurance policies, and warranty receipts. Keep the NAS-provided source path for each candidate. If no candidates are found, say so and stop.
-3. **Document-reader pass:** use the Documents capability to read the candidate documents and extract only explicitly stated provider/item, date, date meaning, category, and amount/currency when present. Do not infer missing dates, amounts, or renewals from a purchase date alone.
-4. **Evidence-review pass:** independently check each extracted date against its source content. Return a date only when a nearby statement supports its meaning, such as “payment due,” “renews on,” “expires,” or “warranty valid until.” Attach a short source excerpt or the nearest relevant text and the source path. Flag unclear date formats, conflicting dates, and uncertain classifications instead of resolving them by guesswork. Interpret unambiguous ISO and month-name dates directly. For ambiguous numeric dates, ask the user which date convention applies or mark the item “date needs confirmation.”
-5. **Result pass:** remove duplicate references to the same document and event, sort by date, and include only results in the requested time window. Clearly distinguish upcoming from already overdue items. If a document could not be read, list its filename and the available reason without implying it contains a renewal.
+   `delegate --target document-agent --instruction 'Use ug-document extract on only the actual candidate file paths returned by the completed file-agent result. Extract explicitly stated provider or item, renewal or payment date, date meaning, category, amount and currency if present, and a short supporting excerpt with its source path. Check the user requested date window and categories: include qualifying events and separately flag overdue or ambiguous events. Do not infer a renewal from a purchase date, resolve ambiguous numeric dates by guesswork, read other files, or modify or share content. Return extraction coverage, unreadable-file reasons, and the operation status.'`
 
-The passes are reasoning roles inside this Skill's single workflow; do not claim that separate external agents or services ran.
+5. Continue to synthesis only when the document-agent returns status `completed`. Use the real result returned by file-agent as the input to document-agent; use only the actual extracted facts, coverage, and failures from that downstream result as the sole source for the review list. Never state an event was verified when its evidence is absent, and never conceal partial coverage.
+6. Review each proposed date against the returned supporting excerpt. Include a date only when nearby text establishes its meaning, such as “payment due,” “renews on,” “expires,” or “warranty valid until.” Interpret clear ISO and month-name dates. Mark ambiguous numeric dates as needing confirmation. Preserve conflicting dates for the user to review. Deduplicate the same event, sort by date, restrict results to the requested window, and distinguish overdue items from future items.
 
-## Result format
+# Completion and failure
 
-Return a compact table with: date, date meaning, category, provider/item (if explicit), amount/currency (if explicit), source path, and supporting text. Follow it with a short “Needs review” section for ambiguous or unreadable items. If nothing qualifies, state that no matching items were found in the selected folder and window. Never fabricate a result to fill the table.
+Handle every delegation status explicitly:
 
-## Permissions, model, and data handling
+- `completed`: use only the actual result returned by that expert and proceed to the next required step.
+- `failed`: report which step failed and the available error; do not report a successful review.
+- `cancelled`: state that the operation was cancelled and stop.
+- `waiting_user`: ask only for the missing answer or permission, then resume only after the user responds.
+- `waiting_approval`: explain the pending approval and wait. This Skill does not authorize or perform write actions.
 
-Ask before searching a folder that the user has not authorized. Operate with the invoking user's NAS permissions and use the built-in local Uliya model when available. Do not send document text, paths, or extracted personal information to external models or services. Do not retain extracted text beyond the current request. This Skill is read-only: it must not create, move, rename, tag, overwrite, or delete files. It does not send reminders or share information externally.
+If the folder is missing or inaccessible, ask the user to select an authorized folder. If a required capability is unavailable, say which step is unsupported and stop; never substitute direct file access, another data source, or an external service. If an individual document is unreadable, report its filename and the returned reason under “Needs review” while clearly labeling coverage partial if applicable. If no candidates or no qualifying events are found, say so and stop without inventing similar results.
 
-## Failure handling
+# Result format
 
-- If the folder is missing, outside the authorized scope, or inaccessible, explain that and ask the user to select an accessible folder.
-- If Files or Documents capabilities are unavailable, stop and identify the missing capability; do not fall back to arbitrary commands.
-- If no candidate documents are found, say so and stop.
-- If a document is unreadable, report it under “Needs review” and continue with other candidates.
-- If extracted dates conflict or their meaning is unclear, show the competing evidence and request user review. Do not choose one silently.
-- If the search is incomplete because a capability fails, label the result incomplete and name the affected files or step.
+Return a compact table with date, date meaning, category, provider or item, amount/currency if stated, source path, and supporting excerpt. Add a “Needs review” section for ambiguous dates, conflicting evidence, unreadable files, or incomplete coverage. State explicitly when no matching documents or no qualifying events were found. Never fabricate a result.
 
-## Hackathon implementation and disclosures
+For a short user-facing overview, see [README](references/README.md).
 
-The original hackathon functionality is the sequential document-finding, date-extraction, and evidence-review workflow that produces a source-linked renewal list. This Round 1 Skill uses only the Files and Documents capability areas documented in the official UGREEN Starter Kit; exact CLI/tool names are intentionally not asserted here.
+# Permissions and data handling
 
-Third-party components and open-source libraries: none are bundled or called by this Skill. AI tools: OpenAI Codex ([source](https://openai.com/codex/)) was used to draft the Skill and proposal; it is not a runtime dependency. At runtime the Skill is intended to use UGREEN's built-in local Uliya model. No external model or service is part of the planned workflow. Capability source: [UGREEN Hackathon Starter Kit](https://ai.ugreen.com/pages/hackathon-starter-kit).
+Search only the explicitly authorized folder using the invoking user's NAS permissions. Request the minimum file-read scope needed. Do not retain document text beyond the current request. This Skill does not use external models, APIs, or services and does not disclose or transmit document content, paths, or extracted personal information externally. If a delegated capability cannot meet that boundary, stop and tell the user. No credentials, scripts, binaries, or third-party libraries are included in this Skill package.
+
+# Source and development disclosure
+
+The original RenewWise workflow and Skill text are developed for this project. OpenAI Codex was used to help draft and review the Skill; it is not a runtime dependency. The `ug-filesystem` and `ug-document` names and Actions are drawn from the official UGREEN Skill Creation Tool's public capability catalog (version 2.0.0). No UGREEN endorsement or certification is claimed. The local Flask API prototype is separate from this orchestration Skill and is not part of the Skill package. SkillHub license selection remains a publisher choice and must be completed truthfully during upload.
