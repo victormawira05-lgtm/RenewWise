@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RenewWise</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>⚡ RenewWise</h1>
+    <p>Clean Energy Document Verifier</p>
+    <div id="health" class="health">Checking API...</div>
+  </header>
+
+  <section class="card">
+    <h2>Upload Document</h2>
+    <input type="file" id="fileInput" />
+    <button id="uploadBtn">Verify & Authorize</button>
+    <div id="uploadStatus"></div>
+  </section>
+
+  <section class="card">
+    <h2>Authorized Documents</h2>
+    <button id="refreshBtn">Refresh</button>
+    <div id="docsList">Loading...</div>
+  </section>
+
+  <footer>
+    <small>Backend: <span id="apiUrl"></span> | <a href="https://youtu.be/XI3ACNv6Cr8cd" target="_blank">Demo Video</a></small>
+  </footer>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
