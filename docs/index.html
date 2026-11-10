@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f6f8f4" />
+    <meta name="description" content="RenewWise helps you review upcoming bills, renewals, and warranty dates with evidence linked to each source document." />
+    <meta property="og:title" content="RenewWise — Know what’s due" />
+    <meta property="og:description" content="A private, evidence-linked paperwork review Skill for UGREEN AI NAS." />
+    <meta property="og:image" content="./assets/RenewWise_Thumbnail.png" />
+    <title>RenewWise — Know what’s due</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%231c7658'/%3E%3Cpath d='M12 13h16M12 20h12M12 27h8' stroke='white' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="wordmark" href="#top" aria-label="RenewWise home"><span class="mark" aria-hidden="true"><i></i><i></i><i></i></span><span>Renew<span>Wise</span></span></a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="#demo">Explore demo</a>
+        <a href="#how-it-works">How it works</a>
+        <a class="github-link" href="https://github.com/victormawira05-lgtm/RenewWise" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+      </nav>
+      <a class="nav-cta" href="#demo">Try the demo <span aria-hidden="true">→</span></a>
+    </header>
+
+    <main id="top">
+      <section class="hero wrap">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="eyebrow-dot"></span> A PRIVATE PAPERWORK REVIEW SKILL</div>
+          <h1>Know what’s due.<br /><em>Before it slips by.</em></h1>
+          <p class="hero-lede">Bills, renewals, and warranties can hide in a pile of files. RenewWise turns the paperwork you authorize into a clear list, with evidence tied to every date.</p>
+          <div class="hero-actions"><a class="button button-primary" href="#demo">Explore the sample review <span aria-hidden="true">↓</span></a><a class="button button-quiet" href="#how-it-works">How RenewWise works</a></div>
+          <div class="trust-row"><span><b>✓</b> Source-linked</span><span><b>✓</b> Read-only by design</span><span><b>✓</b> Built for UGREEN AI NAS</span></div>
+        </div>
+        <div class="hero-art"><img src="./assets/RenewWise_Thumbnail.png" alt="RenewWise concept illustration showing a review list of upcoming household dates" /><div class="art-caption"><span class="status-dot"></span> CONCEPT PREVIEW <span class="caption-line"></span> SAMPLE DATA</div></div>
+      </section>
+
+      <section id="demo" class="demo-section">
+        <div class="wrap">
+          <div class="section-heading demo-heading"><div><div class="eyebrow">TRY A SAMPLE REVIEW</div><h2>Your paperwork, in a clearer view.</h2><p>Explore how RenewWise could surface dates and their source evidence.</p></div><div class="sample-badge"><span></span> Fictional sample records</div></div>
+          <div class="demo-notice"><span class="notice-icon" aria-hidden="true">i</span><p><b>Interactive concept demo.</b> These examples are fictional. This page does not connect to a NAS, read your files, or upload documents.</p></div>
+
+          <div class="review-card">
+            <div class="review-top"><div class="review-title"><div class="file-stack" aria-hidden="true"><span>▤</span></div><div><h3>Upcoming dates</h3><p id="range-caption">Due or expiring in the next 30 days</p></div></div><div class="scan-pill"><span></span> 5 sample documents</div></div>
+            <div class="toolbar"><div class="search-box"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Search bills, renewals, or warranties" aria-label="Search sample records" /><button id="clear-search" class="clear-search" type="button" aria-label="Clear search" hidden>×</button></div><div class="range-tabs" role="group" aria-label="Date range"><button class="range-tab is-active" data-range="30" type="button">30 days</button><button class="range-tab" data-range="60" type="button">60 days</button><button class="range-tab" data-range="all" type="button">All dates</button></div></div>
+            <div class="category-row" role="group" aria-label="Filter by category"><button class="category-chip is-active" data-category="all" type="button">All items <span id="all-count">5</span></button><button class="category-chip" data-category="bill" type="button">Bills</button><button class="category-chip" data-category="subscription" type="button">Subscriptions</button><button class="category-chip" data-category="insurance" type="button">Insurance</button><button class="category-chip" data-category="warranty" type="button">Warranties</button></div>
+            <div class="table-head"><span>DOCUMENT / ITEM</span><span>DATE</span><span>AMOUNT</span><span></span></div>
+            <div id="results" class="results" aria-live="polite"></div>
+            <div id="empty-state" class="empty-state" hidden><span class="empty-icon">⌕</span><b>No matching sample records</b><p>Try a different category, date range, or search.</p><button id="reset-filters" type="button">Reset filters</button></div>
+            <div class="review-footer"><span><span class="tiny-green-dot"></span> Evidence is shown before you act</span><span>Demo only · No real documents</span></div>
+          </div>
+          <p class="demo-footnote">The live demo demonstrates the review interface only. Actual NAS search and document extraction depend on UGREEN’s Skill Developer Package and still need device validation.</p>
+        </div>
+      </section>
+
+      <section id="how-it-works" class="how-section wrap">
+        <div class="section-heading"><div><div class="eyebrow">A SMALLER PAPERWORK CHORE</div><h2>Find it. Check it. Know where it came from.</h2></div><p class="section-intro">RenewWise is designed to keep the person in control: review the evidence first, and let unclear dates stay unclear until you check them.</p></div>
+        <div class="steps-grid">
+          <article class="step-card"><div class="step-number">01</div><div class="step-icon folder-icon" aria-hidden="true">▱</div><h3>Choose a folder</h3><p>Tell the Skill which authorized NAS folder to review and how far ahead to look.</p><span class="step-label">FILES · FIND & BROWSE</span></article>
+          <article class="step-card"><div class="step-number">02</div><div class="step-icon doc-icon" aria-hidden="true">▤</div><h3>Read the documents</h3><p>Candidate bills, policies, subscription notices, and receipts are checked for relevant dates.</p><span class="step-label">DOCUMENTS · READ & EXTRACT</span></article>
+          <article class="step-card"><div class="step-number">03</div><div class="step-icon check-icon" aria-hidden="true">✓</div><h3>Review the evidence</h3><p>Each result points back to its source. Conflicting dates are flagged for you to resolve.</p><span class="step-label">YOU STAY IN CONTROL</span></article>
+        </div>
+      </section>
+
+      <section class="privacy-band"><div class="wrap privacy-inner"><div class="privacy-mark" aria-hidden="true">◈</div><div><div class="eyebrow">DESIGNED AROUND YOUR FILES</div><h2>Your documents stay yours.</h2><p>The planned NAS Skill is read-only and uses only folders you authorize. This demo site uses fictional records and never asks you to upload documents.</p></div><a href="https://github.com/victormawira05-lgtm/RenewWise" target="_blank" rel="noreferrer" class="button button-light">View project on GitHub <span aria-hidden="true">↗</span></a></div></section>
+    </main>
+
+    <footer class="site-footer wrap"><a class="wordmark footer-mark" href="#top"><span class="mark" aria-hidden="true"><i></i><i></i><i></i></span><span>Renew<span>Wise</span></span></a><p>Early concept demo · Built for the UGREEN AI NAS Hackathon</p><a href="#top" class="back-top">Back to top ↑</a></footer>
+
+    <dialog id="evidence-dialog" class="evidence-dialog" aria-labelledby="dialog-title"><form method="dialog"><button class="dialog-close" aria-label="Close evidence">×</button></form><div class="dialog-eyebrow"><span class="dialog-dot"></span> SOURCE EVIDENCE</div><h2 id="dialog-title">Document evidence</h2><p id="dialog-subtitle" class="dialog-subtitle"></p><blockquote id="dialog-evidence"></blockquote><div class="dialog-file"><span aria-hidden="true">▤</span><div><small>SAMPLE SOURCE DOCUMENT</small><b id="dialog-file-name"></b></div><span class="sample-only">FICTIONAL</span></div><p class="dialog-note">In the planned Skill, this source reference would point to a document in the folder you authorized.</p></dialog>
+    <script src="./app.js" defer></script>
+  </body>
+</html>

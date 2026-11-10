@@ -14,6 +14,10 @@ This repository contains the Round 1 Skill draft, proposal, and a separate local
 
 The Flask backend is for local prototyping. It is **not** the UGREEN NAS Skill runtime and is not included in the pre-test Skill ZIP.
 
+## Interactive demo site
+
+The `docs/` folder contains a static, interactive concept demo intended for GitHub Pages. It uses fictional sample records only. It does not connect to UGREEN NAS, scan user documents, or upload files. The actual NAS Skill still needs the official developer tools and device validation.
+
 ## Repository contents
 
 | Path | Contents |
@@ -21,6 +25,7 @@ The Flask backend is for local prototyping. It is **not** the UGREEN NAS Skill r
 | [`skill/SKILL.md`](skill/SKILL.md) | Skill entry point, workflow, permissions, and failure handling |
 | [`skill/README.md`](skill/README.md) | Short user-facing Skill description |
 | [`backend/`](backend/README.md) | Read-only local document extraction API prototype |
+| [`docs/`](docs/index.html) | Static interactive demo site for GitHub Pages |
 | [`proposal.md`](proposal.md) | Editable source for the Round 1 proposal |
 | [`submission/`](submission/README.md) | Proposal PDF and pre-test Skill ZIP |
 
@@ -70,3 +75,7 @@ The response includes candidate dates, categories, source filenames, nearby text
 - [Pre-test Skill package ZIP](submission/RenewWise_Pretest_Skill_Package.zip)
 
 The proposal contains 363 words across its ten substantive answers. Check the current [UGREEN Hackathon Devpost page](https://ugreenhackathon.devpost.com/) for submission requirements and deadlines.
+
+## GitHub Pages
+
+The deployment workflow is in [`.github/workflows/pages.yml`](.github/workflows/pages.yml). In the repository settings, set **Pages → Build and deployment → Source** to **GitHub Actions**. A push to `main` that changes `docs/` then publishes the demo site. GitHub reports the live URL in the workflow's `github-pages` deployment environment.
