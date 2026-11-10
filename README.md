@@ -2,6 +2,8 @@
 
 **A private, evidence-linked paperwork review Skill for UGREEN AI NAS.**
 
+![RenewWise thumbnail](assets/RenewWise_Thumbnail.png)
+
 RenewWise helps households and small offices find bill due dates, subscription renewals, insurance dates, and warranty expirations hidden in their documents. The user chooses an authorized NAS folder and a time window. RenewWise returns a sorted review list with each date's source file and supporting text, and flags unclear results instead of guessing.
 
 The Skill is designed to be read-only. It does not move or edit files, create reminders, contact providers, or send document content to external services.
