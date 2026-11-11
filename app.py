@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+﻿from flask import Flask, jsonify
 from flask_cors import CORS
 import uuid
 app = Flask(__name__)
@@ -20,10 +20,8 @@ def get_tx():
  return jsonify({"transactions": transactions, "summary": {"income": inc, "spent": spent, "net": inc-spent}})
 @app.route("/api/reset", methods=["POST"])
 def reset():
- global transactions
- transactions = transactions[:]
- return jsonify({"message": "Reset OK 160"})
+ return jsonify({"message": "Reset OK"})
 @app.route("/", methods=["GET"])
-def home(): return jsonify({"message": "PesaAI Running", "count": len(transactions)})
+def home(): return jsonify({"message": "PesaAI Running"})
 @app.route("/health", methods=["GET"])
 def health(): return jsonify({"status": "ok"})
