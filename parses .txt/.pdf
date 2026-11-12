@@ -1,0 +1,45 @@
+<!-- RenewWise - Useful Demo - Client side only, no upload -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+const SAMPLE_DOCS = [
+  {
+    id:1, title:"Home Internet - Zuku", type:"Bill",
+    date:"2026-11-19", due_in:7, amount:"KES 4,250",
+    status:"due_soon",
+    excerpt:"Please pay KES 4,250 on or before Nov 19, 2026 to avoid interruption",
+    source:"bills_2026/home-internet-nov.pdf:page1:line3",
+    confidence:0.96
+  },
+  {
+    id:2, title:"Kitchen Appliance Warranty", type:"Warranty",
+    date:"2026-11-05", due_in:-7, amount:"—",
+    status:"needs_confirmation",
+    excerpt:"Warranty valid until Nov 5, 2026, subject to terms printed on box",
+    source:"warranties/kitchen-receipt.jpg:ocr",
+    confidence:0.62,
+    flag:"Ambiguous - Nov 5 could be 2025 or 2026 per terms"
+  }
+]
+
+// REAL useful feature: Local file drop
+function onFileDrop(files){
+  // Never upload - parse in browser
+  for(let f of files){
+    const text = await f.text() // or pdf.js for pdf
+    const dates = extractDatesWithEvidence(text, f.name)
+    renderResults(dates) // show evidence-linked cards
+  }
+}
+
+function extractDatesWithEvidence(text, fileName){
+  // regex + keep source line number = evidence
+  // Example: /\b(pay|due|valid until)\b.*?(\d{1,2}\s+\w+\s+\d{4})/gi
+  // return [{date, excerpt, source:`${fileName}:L${lineNum}`, confidence}]
+}
+</script>
+
+<div id="drop-zone">
+  <h3>Try with your own file (stays in browser)</h3>
+  <p>Drag a bill/invoice .pdf or .txt - we parse locally, no upload</p>
+  <input type="file" onchange="onFileDrop(this.files)">
+</div>
